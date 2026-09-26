@@ -1,0 +1,5 @@
+private/
+chals/
+.env
+__pycache__/
+*.swp

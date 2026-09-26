@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Roboto+Mono:wght@300;400;700&display=swap">
+<title>ilio × FLARE-On 13</title>
+<style>
+  /* Theme matches noelo.org: light, flat, monospace. Black, white, and the red out of the mark. */
+  :root{
+    color-scheme:light;
+    --paper:#FFFFFF; --paper-2:#F7F4F3; --ink:#141110; --ink-2:#3A3230; --muted:#6E6663;
+    --rule:#E4DDDB; --rule-2:#CEC5C2; --red:#B80D1E;
+    --dk-text:#C9C0BD; --dk-muted:#9C918D; --dk-rule:#302826; --dk-red:#E8404E;
+    /* report roles mapped onto the noelo palette */
+    --accent:var(--ink-2); --kuna:var(--red); --good:var(--red);
+    --track:var(--paper-2);
+    --mono:'Roboto Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --disp:'Jost','Futura','Avenir Next',system-ui,sans-serif;
+    --pad:clamp(16px,5vw,56px); --gutter:clamp(24px,4.5vw,64px); --rail:190px;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font:400 0.9375rem/1.75 var(--mono);
+    font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;min-height:100vh}
+  main{flex:1 0 auto}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--red);outline-offset:3px}
+  ::selection{background:var(--ink);color:var(--paper)}
+  .wrap{max-width:1140px;margin:0 auto;padding-inline:var(--pad);width:100%}
+  h1,h2,h3,h4{font-family:var(--disp);margin:0;text-wrap:balance}
+  p{margin:0 0 14px}
+  strong{font-weight:700;color:var(--ink)}
+  .muted{color:var(--muted)}
+  code,.mono{font-family:var(--mono)}
+  code{font-size:.8125rem;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px}
+  .flag{font-family:var(--mono);font-size:.78rem;color:var(--ink-2);word-break:break-all}
+
+  .label{font:700 0.6875rem/1.4 var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--muted)}
+  .tick{flex:none;color:var(--red)}
+  .eyebrow{display:flex;align-items:center;gap:10px}
+
+  /* top bar */
+  .top{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px dashed var(--rule-2)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px 24px;
+    min-height:60px;flex-wrap:wrap;padding-block:10px}
+  .brand{font:700 .8125rem/1 var(--mono);letter-spacing:.04em;text-decoration:none}
+  .brand b{color:var(--red);font-weight:700}
+  .top .at{font-size:.75rem;color:var(--muted)}
+
+  /* page head */
+  .pagehead{padding-block:clamp(44px,6vw,84px) clamp(26px,3.4vw,40px)}
+  .pagehead h1{font-size:clamp(2.1rem,4.6vw,3.2rem);font-weight:300;letter-spacing:-.032em;
+    line-height:1.06;margin-top:20px}
+  h1 .win{color:var(--red)}
+
+  /* run summary block */
+  .console{margin-top:clamp(28px,3.4vw,40px);background:var(--paper-2);border:1px solid var(--rule)}
+  .console .bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px dashed var(--rule-2)}
+  .console .bar .t{font:700 .6875rem/1.4 var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--muted)}
+  .console .body{padding:14px 16px;font-size:.8125rem;overflow-x:auto}
+  .console .row{white-space:nowrap}
+  .console .k{color:var(--muted)}
+  .console .v{color:var(--ink)}
+  .console .prompt{color:var(--red)}
+
+  /* KPI tiles */
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);margin-top:24px;
+    border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+  @media (max-width:620px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{padding:20px 18px 18px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .kpi .num{font-family:var(--disp);font-size:2rem;font-weight:300;letter-spacing:-.02em;line-height:1.1}
+  .kpi .lab{font-size:.75rem;color:var(--ink-2);margin-top:8px;line-height:1.5}
+  .kpi .sub{font-size:.6875rem;color:var(--muted);margin-top:2px}
+  .kpi.win .num{color:var(--red)}
+
+  /* railed sections */
+  .sec{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);column-gap:var(--gutter);
+    padding-block:clamp(48px,6.5vw,88px);border-top:1px solid var(--rule)}
+  .sec > .head{display:flex;align-items:center;gap:9px;align-self:start;position:sticky;top:84px}
+  .sec > .head .n{color:var(--red)}
+  .sec h2{font-size:clamp(1.6rem,2.8vw,2.15rem);font-weight:400;letter-spacing:-.015em;
+    line-height:1.12;margin-bottom:18px}
+  .sec > .body > p{color:var(--ink-2);max-width:70ch}
+  .sec > .body > p.muted{color:var(--muted)}
+  .sec.wide{grid-template-columns:minmax(0,1fr);row-gap:20px}
+  .sec.wide > .head{position:static}
+  @media (max-width:900px){
+    .sec{grid-template-columns:minmax(0,1fr);row-gap:20px}
+    .sec > .head{position:static}
+  }
+
+  /* bar charts */
+  .chart{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:16px 0 10px;margin-top:8px}
+  .brow{display:grid;grid-template-columns:150px 1fr 48px;align-items:center;gap:12px;padding:3px 0}
+  @media (max-width:520px){.brow{grid-template-columns:108px 1fr 40px}}
+  .brow .name{font-size:.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brow .cat{color:var(--muted);font-size:.625rem}
+  .track{background:var(--track);height:12px;overflow:hidden}
+  .fill{height:100%;background:var(--accent);min-width:2px}
+  .fill.kuna{background:var(--kuna)}
+  .brow .val{font-size:.75rem;text-align:right;color:var(--muted)}
+  .brow:hover .fill{background:var(--ink)}
+  .brow:hover .fill.kuna{background:var(--red)}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin:14px 0 2px;font-size:.75rem;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:8px}
+  .sw{width:10px;height:10px;display:inline-block}
+
+  /* two-col */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,3vw,40px)}
+  @media (max-width:760px){.cols{grid-template-columns:1fr}}
+  .card{border-top:1px solid var(--ink);padding-top:16px}
+  .card h3{font-size:1.25rem;font-weight:500;letter-spacing:-.01em;margin-bottom:10px}
+  .card p{font-size:.8125rem;line-height:1.7}
+
+  /* cost composition bar */
+  .comp{display:flex;height:18px;overflow:hidden;margin:10px 0 14px;border:1px solid var(--rule-2)}
+  .comp>i{display:block;height:100%}
+  .comp .cached{background:var(--rule-2)}
+  .comp .unc{background:var(--ink-2)}
+  .comp .out{background:var(--red)}
+  .clist{list-style:none;padding:0;margin:0;font-size:.8125rem}
+  .clist li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--rule-2)}
+  .clist li:last-child{border-bottom:0}
+  .clist .lab{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .clist .v{font-family:var(--mono);text-align:right}
+  .est{background:var(--paper-2);border-left:2px solid var(--red);padding:14px 16px;margin-top:16px}
+  .est .big{font-family:var(--disp);font-size:1.9rem;font-weight:300;letter-spacing:-.02em;color:var(--red);line-height:1.2}
+  .subh{font-size:1.25rem;font-weight:500;letter-spacing:-.01em;margin:36px 0 6px}
+
+  /* trace table */
+  .tscroll{overflow-x:auto;border-top:1px solid var(--ink)}
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:.8125rem}
+  thead th{text-align:left;font:700 .6875rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);padding:12px;border-bottom:1px solid var(--rule);white-space:nowrap}
+  tbody td{padding:11px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+  tbody tr:hover td{background:var(--paper-2)}
+  td.num{text-align:right;white-space:nowrap}
+  .cid{color:var(--red)}
+  .cname{font-family:var(--disp);font-size:.9375rem;font-weight:500}
+  .kbadge{display:inline-block;font:700 .6875rem/1 var(--mono);padding:4px 7px;
+    border:1px solid var(--red);color:var(--red)}
+  .kzero{color:var(--muted);font-size:.6875rem}
+  .tools{color:var(--muted);font-size:.72rem}
+  
+  /* detail rows */
+  .acc{border-top:1px solid var(--rule)}
+  details{border-bottom:1px solid var(--rule)}
+  summary{cursor:pointer;list-style:none;padding:16px 12px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    border-left:2px solid transparent;transition:background .12s linear,border-color .12s linear}
+  summary:hover{background:var(--paper-2);border-left-color:var(--red)}
+  summary::-webkit-details-marker{display:none}
+  summary .chev{margin-left:auto;color:var(--muted);transition:transform .15s}
+  details[open] summary .chev{transform:rotate(90deg);color:var(--red)}
+  summary .id{color:var(--red);font-size:.8125rem;min-width:1.2em}
+  summary .nm{font-family:var(--disp);font-size:1.125rem;font-weight:500;letter-spacing:-.01em}
+  summary .meta{font-size:.72rem;color:var(--muted)}
+  .dbody{padding:0 12px 20px 40px}
+  .dbody h4{margin:14px 0 6px;font:700 .6875rem/1.4 var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--muted)}
+  .dbody p{margin:0 0 6px;font-size:.8125rem;line-height:1.7;color:var(--ink-2)}
+  .quote{border-left:2px solid var(--rule-2);padding-left:16px}
+  .quote.solve{border-color:var(--red)}
+
+  .tag{display:inline-block;font-size:.6875rem;line-height:1;padding:5px 8px;
+    border:1px solid var(--rule-2);color:var(--muted);margin:0 5px 5px 0}
+  .clist .tag{margin:0}
+
+  /* footer (dark, as on noelo.org) */
+  .foot{background:var(--ink);color:var(--dk-text);flex:none;padding-block:clamp(40px,5vw,64px)}
+  .foot p{font-size:.8125rem;line-height:1.85;color:var(--dk-muted);max-width:90ch}
+  .foot code{background:none;border:0;padding:0;color:var(--dk-text)}
+  .foot .tag{border-color:var(--dk-rule);color:var(--dk-text)}
+  .foot .colophon{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;
+    margin-top:28px;padding-top:18px;border-top:1px solid var(--dk-rule);font-size:.75rem}
+  .foot .colophon b{font-weight:400;color:var(--dk-red)}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><span class="brand"><b>ilio</b> / flare-on 13</span><span class="at">post-run report</span></div></header>
+<main>
+<div class="wrap">
+
+  <header class="pagehead">
+    <p class="eyebrow label"><svg class="tick" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg> Autonomous RE Agent · Post-Run Report</p>
+    <h1>FLARE-On 13, <span class="win">cleared 9/9</span> by ilio</h1>
+
+    <div class="console">
+      <div class="bar"><svg class="tick" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg><span class="t">ilio auto — run summary</span></div>
+      <div class="body">
+        <div class="row"><span class="prompt">$</span> <span class="k">model</span> <span class="v">gpt-5.6-sol · reasoning=high · service_tier=priority</span></div>
+        <div class="row"><span class="prompt">$</span> <span class="k">date</span>  <span class="v">2026-09-26 · target flare-on13.ctfd.io</span></div>
+        <div class="row"><span class="prompt">$</span> <span class="k">result</span> <span class="v">9 / 9 solved · 0 resumes · 0 cyber-filter blocks · 0 wrong-flag retries</span></div>
+        <div class="row"><span class="prompt">$</span> <span class="k">wall</span>  <span class="v">~80.5 min agent time across the 9 solves</span></div>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi win"><div class="num">9 / 9</div><div class="lab">challenges solved &amp; accepted</div><div class="sub">first-attempt each</div></div>
+      <div class="kpi"><div class="num">80.5<span style="font-size:15px"> min</span></div><div class="lab">total agent wall time</div><div class="sub">42 s → 24 min per chal</div></div>
+      <div class="kpi"><div class="num">494</div><div class="lab">shell commands run</div><div class="sub">across 9 codex turns</div></div>
+      <div class="kpi"><div class="num" style="color:var(--kuna)">51</div><div class="lab">kuna invocations</div><div class="sub">6 of 9 challenges</div></div>
+      <div class="kpi"><div class="num">64.9<span style="font-size:15px"> M</span></div><div class="lab">billable tokens (in+out)</div><div class="sub">98% served from cache</div></div>
+      <div class="kpi"><div class="num">~$21<span style="font-size:14px"> est.</span></div><div class="lab">illustrative total cost</div><div class="sub">~$2.4 / challenge*</div></div>
+    </div>
+  </header>
+
+  <!-- HOW THE RUN WENT -->
+  <section class="sec">
+    <p class="head label"><svg class="tick" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg> <span class="n">01</span> Run</p>
+    <div class="body">
+    <h2>How the run went</h2>
+    <p>Each challenge was solved inside a <strong>single Codex turn</strong> — no resume/retry loops fired, and the cyber-content filter never blocked a turn. The agent opened every challenge the same way: read the <code>$flareon</code> playbook, triage the handout, then split into parallel static / dynamic / forensic "lanes" and keep flag submission in the root session. That discipline shows up as a tight, uneventful log: 494 commands, 9 turns, 9 accepted flags.</p>
+    <p class="muted">The two hardest challenges — <strong>FlareCalc</strong> and <strong>crux</strong> — took ~23–24 min and 127–148 commands each, together accounting for ~59% of all tokens. The fastest, <strong>NeonOutRun</strong>, fell in 21 seconds and 2 commands.</p>
+    </div>
+  </section>
+
+  <!-- TOOL USAGE -->
+  <section class="sec">
+    <p class="head label"><svg class="tick" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg> <span class="n">02</span> Tools</p>
+    <div class="body">
+    <h2>Tool usage</h2>
+    <p>Count of shell commands that invoked each tool (a single command can chain several). <strong>python</strong>, <strong>sed/awk</strong> and <strong>rg</strong> are the scripting glue; the reverse-engineering workhorses are <span style="color:var(--kuna);font-weight:600">kuna</span>, <code>objdump</code>, <code>wasm-tools</code>, <code>ilspycmd</code> and <code>tshark</code>.</p>
+    <div class="chart" role="img" aria-label="Bar chart of tool invocation counts; python 160 is highest, kuna 51 is fifth and highlighted.">
+      <div class="brow"><span class="name">python <span class="cat">script</span></span><div class="track"><div class="fill" style="width:100%" title="python: 160"></div></div><span class="val">160</span></div>
+      <div class="brow"><span class="name">sed / awk <span class="cat">text</span></span><div class="track"><div class="fill" style="width:96.9%" title="sed/awk: 155"></div></div><span class="val">155</span></div>
+      <div class="brow"><span class="name">rg / grep <span class="cat">search</span></span><div class="track"><div class="fill" style="width:71.9%" title="rg/grep: 115"></div></div><span class="val">115</span></div>
+      <div class="brow"><span class="name">xxd / hexdump <span class="cat">inspect</span></span><div class="track"><div class="fill" style="width:42.5%" title="xxd/hexdump: 68"></div></div><span class="val">68</span></div>
+      <div class="brow"><span class="name" style="color:var(--kuna);font-weight:600">kuna <span class="cat">decompile</span></span><div class="track"><div class="fill kuna" style="width:31.9%" title="kuna: 51"></div></div><span class="val" style="color:var(--kuna)">51</span></div>
+      <div class="brow"><span class="name">strings <span class="cat">inspect</span></span><div class="track"><div class="fill" style="width:28.8%" title="strings: 46"></div></div><span class="val">46</span></div>
+      <div class="brow"><span class="name">node <span class="cat">runtime</span></span><div class="track"><div class="fill" style="width:23.8%" title="node: 38"></div></div><span class="val">38</span></div>
+      <div class="brow"><span class="name">objdump <span class="cat">disasm</span></span><div class="track"><div class="fill" style="width:23.1%" title="objdump: 37"></div></div><span class="val">37</span></div>
+      <div class="brow"><span class="name">wasm-tools <span class="cat">wasm</span></span><div class="track"><div class="fill" style="width:18.1%" title="wasm-tools: 29"></div></div><span class="val">29</span></div>
+      <div class="brow"><span class="name">file <span class="cat">inspect</span></span><div class="track"><div class="fill" style="width:13.8%" title="file: 22"></div></div><span class="val">22</span></div>
+      <div class="brow"><span class="name">7z / unzip / tar <span class="cat">archive</span></span><div class="track"><div class="fill" style="width:9.4%" title="7z/unzip/tar: 15"></div></div><span class="val">15</span></div>
+      <div class="brow"><span class="name">jq <span class="cat">search</span></span><div class="track"><div class="fill" style="width:6.9%" title="jq: 11"></div></div><span class="val">11</span></div>
+      <div class="brow"><span class="name">nm <span class="cat">disasm</span></span><div class="track"><div class="fill" style="width:5%" title="nm: 8"></div></div><span class="val">8</span></div>
+      <div class="brow"><span class="name">gcc / clang <span class="cat">compile</span></span><div class="track"><div class="fill" style="width:5%" title="gcc/clang: 8"></div></div><span class="val">8</span></div>
+      <div class="brow"><span class="name">tshark <span class="cat">network</span></span><div class="track"><div class="fill" style="width:4.4%" title="tshark: 7"></div></div><span class="val">7</span></div>
+      <div class="brow"><span class="name">dotnet / mono <span class="cat">runtime</span></span><div class="track"><div class="fill" style="width:1.9%" title="dotnet/mono: 3"></div></div><span class="val">3</span></div>
+      <div class="brow"><span class="name">ilspycmd <span class="cat">.NET</span></span><div class="track"><div class="fill" style="width:1.9%" title="ilspycmd: 3"></div></div><span class="val">3</span></div>
+      <div class="brow"><span class="name">openssl <span class="cat">crypto</span></span><div class="track"><div class="fill" style="width:1.9%" title="openssl: 3"></div></div><span class="val">3</span></div>
+      <div class="brow"><span class="name">binwalk <span class="cat">carve</span></span><div class="track"><div class="fill" style="width:1.5%" title="binwalk: 2"></div></div><span class="val">2</span></div>
+      <div class="brow"><span class="name">radare2 <span class="cat">disasm</span></span><div class="track"><div class="fill" style="width:1.2%" title="radare2: 1"></div></div><span class="val">1</span></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--accent)"></i> general tooling</span>
+        <span><i class="sw" style="background:var(--kuna)"></i> kuna (decompiler under test)</span>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- KUNA FOCUS -->
+  <section class="sec">
+    <p class="head label"><svg class="tick" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg> <span class="n">03</span> Kuna</p>
+    <div class="body">
+    <h2>Kuna in focus</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>51 calls, 6 of 9 challenges</h3>
+        <p class="muted">Kuna was the agent's default move for anything native: it reached for the decompiler on every challenge that shipped a compiled binary, and leaned on it hardest for the two long native problems.</p>
+        <ul class="clist">
+          <li><span class="lab">FlareCalc <span class="tag">native</span></span><span class="v" style="color:var(--kuna)">20</span></li>
+          <li><span class="lab">FlareOn13.doc <span class="tag">native payload</span></span><span class="v" style="color:var(--kuna)">10</span></li>
+          <li><span class="lab">Threat Invaders <span class="tag">native aid</span></span><span class="v" style="color:var(--kuna)">10</span></li>
+          <li><span class="lab">GhostStream <span class="tag">native</span></span><span class="v" style="color:var(--kuna)">4</span></li>
+          <li><span class="lab">ToxicMiner <span class="tag">native</span></span><span class="v" style="color:var(--kuna)">4</span></li>
+          <li><span class="lab">catthief <span class="tag">Rust</span></span><span class="v" style="color:var(--kuna)">3</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Where it sat out — and why</h3>
+        <p class="muted">The three challenges with no kuna calls weren't native RE problems:</p>
+        <ul class="clist">
+          <li><span class="lab">FLAreCAPTCHA</span><span class="v muted">HTML/JS — browser only</span></li>
+          <li><span class="lab">crux</span><span class="v muted">browser extension — no native binary</span></li>
+          <li><span class="lab">NeonOutRun</span><span class="v muted">solved in 21 s / 2 cmds</span></li>
+        </ul>
+        <p class="muted" style="margin-top:12px">On the managed-.NET target (Threat Invaders) the agent paired <code>ilspycmd</code> for IL with kuna for the native helper artifacts — kuna was used for guidance, not as the primary decompiler.</p>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:14px">No <code>KUNA_NEED.md</code> gap files were written during the run — the agent did not hit a kuna capability it needed and lacked.</p>
+    </div>
+  </section>
+
+  <!-- COST -->
+  <section class="sec">
+    <p class="head label"><svg class="tick" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg> <span class="n">04</span> Cost</p>
+    <div class="body">
+    <h2>Tokens &amp; cost</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Token composition</h3>
+        <p class="muted">The whole event moved <strong>64.9 M</strong> billable tokens (input + output). Prompt caching absorbed almost all of it — the same growing context is re-sent on every internal step, so 98% of input was a cache hit.</p>
+        <div class="comp" role="img" aria-label="Composition bar: 97.5% cached input, 2.1% uncached input, 0.3% output">
+          <i class="cached" style="width:97.5%" title="cached input: 63.30M"></i>
+          <i class="unc" style="width:2.1%" title="uncached input: 1.39M"></i>
+          <i class="out" style="width:0.4%" title="output: 0.20M"></i>
+        </div>
+        <ul class="clist">
+          <li><span class="lab"><i class="sw" style="background:var(--accent);opacity:.32"></i> Cached input</span><span class="v">63.30 M</span></li>
+          <li><span class="lab"><i class="sw" style="background:var(--accent)"></i> Uncached input</span><span class="v">1.39 M</span></li>
+          <li><span class="lab"><i class="sw" style="background:var(--kuna)"></i> Output <span class="muted">(incl. 0.10M reasoning)</span></span><span class="v">0.20 M</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Illustrative cost</h3>
+        <p class="muted">gpt-5.6-sol priority-tier pricing isn't in the repo, so this is an <strong>estimate</strong> at representative frontier rates — swap in the real rate and recompute from the token lines at left.</p>
+        <ul class="clist">
+          <li><span class="lab">Uncached in · 1.39M × $2.50/M</span><span class="v">$3.48</span></li>
+          <li><span class="lab">Cached in · 63.30M × $0.25/M</span><span class="v">$15.82</span></li>
+          <li><span class="lab">Output · 0.20M × $10.00/M</span><span class="v">$2.04</span></li>
+        </ul>
+        <div class="est">
+          <div class="muted" style="font-size:12px">Estimated total for all 9 solves</div>
+          <div class="big">≈ $21.3</div>
+          <div class="muted" style="font-size:12px">≈ $2.4 per challenge · cache reads dominate the bill</div>
+        </div>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:14px;font-size:12.5px">Note: the harness's own <code>results.tsv</code> "tokens" column sums <em>every</em> usage sub-field, so it double-counts cached input and reasoning (128.3 M across the run). The 64.9 M figure here is the real input + output.</p>
+
+    <h3 class="subh">Billable tokens per challenge</h3>
+    <div class="chart" role="img" aria-label="Bar chart of billable tokens per challenge; FlareCalc 20.3M highest, NeonOutRun 0.06M lowest.">
+      <div class="brow"><span class="name">7 · FlareCalc</span><div class="track"><div class="fill" style="width:100%" title="FlareCalc: 20.33M tokens"></div></div><span class="val">20.3M</span></div>
+      <div class="brow"><span class="name">8 · crux</span><div class="track"><div class="fill" style="width:88.2%" title="crux: 17.93M tokens"></div></div><span class="val">17.9M</span></div>
+      <div class="brow"><span class="name">3 · FlareOn13.doc</span><div class="track"><div class="fill" style="width:51%" title="FlareOn13.doc: 10.36M tokens"></div></div><span class="val">10.4M</span></div>
+      <div class="brow"><span class="name">4 · ToxicMiner</span><div class="track"><div class="fill" style="width:32.3%" title="ToxicMiner: 6.56M tokens"></div></div><span class="val">6.6M</span></div>
+      <div class="brow"><span class="name">6 · Threat Invaders</span><div class="track"><div class="fill" style="width:17.2%" title="Threat Invaders: 3.50M tokens"></div></div><span class="val">3.5M</span></div>
+      <div class="brow"><span class="name">5 · catthief</span><div class="track"><div class="fill" style="width:16.2%" title="catthief: 3.29M tokens"></div></div><span class="val">3.3M</span></div>
+      <div class="brow"><span class="name">2 · GhostStream</span><div class="track"><div class="fill" style="width:13.1%" title="GhostStream: 2.67M tokens"></div></div><span class="val">2.7M</span></div>
+      <div class="brow"><span class="name">1 · FLAreCAPTCHA</span><div class="track"><div class="fill" style="width:1%" title="FLAreCAPTCHA: 0.21M tokens"></div></div><span class="val">0.2M</span></div>
+      <div class="brow"><span class="name">9 · NeonOutRun</span><div class="track"><div class="fill" style="width:0.5%" title="NeonOutRun: 0.06M tokens"></div></div><span class="val">0.06M</span></div>
+    </div>
+    </div>
+  </section>
+
+  <!-- TRACE TABLE -->
+  <section class="sec wide">
+    <p class="head label"><svg class="tick" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg> <span class="n">05</span> Trace</p>
+    <div class="body">
+    <h2>Per-challenge trace</h2>
+    <div class="tscroll">
+      <table>
+        <thead><tr><th>#</th><th>Challenge</th><th>Type</th><th>Wall</th><th>Cmds</th><th>Kuna</th><th>Signature tools</th></tr></thead>
+        <tbody>
+          <tr><td class="cid">1</td><td class="cname">FLAreCAPTCHA</td><td class="muted">HTML/JS</td><td class="num">42 s</td><td class="num">5</td><td><span class="kzero">—</span></td><td class="tools">node, rg</td></tr>
+          <tr><td class="cid">2</td><td class="cname">GhostStream</td><td class="muted">disk image → native</td><td class="num">4.9 m</td><td class="num">32</td><td><span class="kbadge">4</span></td><td class="tools">objdump, python, kuna</td></tr>
+          <tr><td class="cid">3</td><td class="cname">FlareOn13.doc</td><td class="muted">Office document</td><td class="num">9.7 m</td><td class="num">62</td><td><span class="kbadge">10</span></td><td class="tools">xxd, 7z, kuna, python</td></tr>
+          <tr><td class="cid">4</td><td class="cname">ToxicMiner</td><td class="muted">native</td><td class="num">7.9 m</td><td class="num">45</td><td><span class="kbadge">4</span></td><td class="tools">python, kuna, objdump</td></tr>
+          <tr><td class="cid">5</td><td class="cname">catthief</td><td class="muted">Rust + PCAP</td><td class="num">4.1 m</td><td class="num">35</td><td><span class="kbadge">3</span></td><td class="tools">tshark, python, kuna</td></tr>
+          <tr><td class="cid">6</td><td class="cname">Threat Invaders</td><td class="muted">.NET + PCAP</td><td class="num">6.3 m</td><td class="num">38</td><td><span class="kbadge">10</span></td><td class="tools">ilspycmd, tshark, jq, kuna</td></tr>
+          <tr><td class="cid">7</td><td class="cname">FlareCalc</td><td class="muted">native (C++)</td><td class="num">23.8 m</td><td class="num">148</td><td><span class="kbadge">20</span></td><td class="tools">python, kuna, gcc, objdump</td></tr>
+          <tr><td class="cid">8</td><td class="cname">crux</td><td class="muted">browser extension</td><td class="num">22.8 m</td><td class="num">127</td><td><span class="kzero">—</span></td><td class="tools">node, wasm-tools, python</td></tr>
+          <tr><td class="cid">9</td><td class="cname">NeonOutRun</td><td class="muted">Rust native</td><td class="num">21 s</td><td class="num">2</td><td><span class="kzero">—</span></td><td class="tools">rg, sed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted" style="margin-top:12px;font-size:12.5px">Challenge 10 "victory" is not a challenge: its CTFd body is a "Congratulations on completing FLARE-On 13!" note with a prize-shipping form (0 solves, no flag). The agent submitted six evidence-based candidates, all rejected, then wrote <code>HELP.md</code> concluding it is an announcement sentinel and should be excluded from <code>ilio auto</code>.</p>
+    </div>
+  </section>
+
+
+</div>
+</main>
+
+<footer class="foot"><div class="wrap">
+    <p>Generated from the run artifacts in <code>chals/</code>: per-challenge <code>log.jsonl</code> (Codex event stream — command executions, agent messages, <code>turn.completed</code> usage) and <code>result.json</code>. Flags and solve details are intentionally omitted. Tool counts are the number of shell commands invoking each tool. Token figures are input + output from <code>turn.completed</code> usage; cached input is a subset of input and reasoning is a subset of output.</p>
+    <p><span class="tag">model gpt-5.6-sol</span><span class="tag">reasoning high</span><span class="tag">tier priority</span><span class="tag">9/9 solved</span><span class="tag">0 resumes</span></p>
+  <p class="colophon"><span>ilio × FLARE-On 13</span><span><b>9/9</b> solved · 2026</span></p>
+</div></footer>
+
+</body>
+</html>

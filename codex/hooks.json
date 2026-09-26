@@ -1,0 +1,4 @@
+{"hooks": {
+  "Stop": [{"hooks": [{"type": "command", "command": "/root/.codex/stop.sh", "timeout": 10}]}],
+  "PostToolUse": [{"hooks": [{"type": "command", "command": "/root/.codex/nudge.py", "timeout": 10}]}]
+}}

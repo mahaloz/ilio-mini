@@ -1,0 +1,33 @@
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
+service_tier = "priority"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+check_for_update_on_startup = false
+tool_output_token_limit = 20000
+web_search = "live"
+
+[shell_environment_policy]
+inherit = "all"
+ignore_default_excludes = true
+
+[agents]
+max_concurrent_threads_per_session = 3
+default_subagent_reasoning_effort = "high"
+
+[features]
+hooks = true
+apps = false
+plugins = false
+remote_plugin = false
+browser_use = false
+computer_use = false
+image_generation = false
+tool_suggest = false
+goals = false
+
+[skills.bundled]
+enabled = false
+
+[projects."/work"]
+trust_level = "trusted"
